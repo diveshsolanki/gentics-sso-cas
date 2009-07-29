@@ -14,8 +14,9 @@
 		</portlet-info>
 		<portlet-preferences>
 			<preference>
-				<name>searchurl</name>
-				<value>http://localhost/cgi-bin/search_mnogo.cgi?ps=800&amp;q=${query}</value>
+				<!-- The full URL to the CAS Server web application. -->
+				<name>casServerUrlPrefix</name>
+				<value>https://herbert.office:8443/cas-server</value>
 			</preference>
 		</portlet-preferences>
 	</portlet>
