@@ -26,12 +26,20 @@ import org.jasig.cas.client.validation.Assertion;
 public class CASIntegrationFilter implements Filter {
     
     private String sessionAttributeName;
+    
+    private String serverName;
+    
+    private static ThreadLocal serviceUrlStorage = new ThreadLocal();
 
     /*
      * (non-Javadoc)
      * @see javax.servlet.Filter#destroy()
      */
     public void destroy() {
+    }
+    
+    public static String getCurrentServiceUrl() {
+        return (String) serviceUrlStorage.get();
     }
 
     /*
@@ -44,9 +52,19 @@ public class CASIntegrationFilter implements Filter {
         if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
             HttpServletRequest servletRequest = (HttpServletRequest) request;
             HttpSession session = servletRequest.getSession();
+            String serverName = this.serverName;
+            if (serverName == null) {
+                serverName = servletRequest.getServerName();
+                int port = servletRequest.getServerPort();
+                String schema = servletRequest.getScheme();
+                if (!("http".equals(schema) && port == 80)
+                        || "https".equals(schema) && port == 443) {
+                    serverName += ":" + port;
+                }
+            }
             String serviceUrl = CommonUtils.constructServiceUrl(servletRequest, (HttpServletResponse) response,
-                    null, null, null, false);
-            session.setAttribute("serviceUrl", serviceUrl);
+                    null, serverName, null, false);
+            serviceUrlStorage.set(serviceUrl);
             if (session != null) {
                 Object assertObj = session.getAttribute("_const_cas_assertion_");
                 if (assertObj instanceof Assertion) {
@@ -58,7 +76,11 @@ public class CASIntegrationFilter implements Filter {
                 }
             }
         }
-        chain.doFilter(request, response);
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            serviceUrlStorage.remove();
+        }
     }
 
     /*
@@ -70,5 +92,6 @@ public class CASIntegrationFilter implements Filter {
         if (sessionAttributeName == null) {
             sessionAttributeName = "com.gentics.portalnode.remoteuserdata";
         }
+        serverName = config.getInitParameter("serverName");
     }
 }

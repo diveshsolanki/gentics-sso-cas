@@ -10,9 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.GenericPortlet;
 import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
@@ -22,6 +25,8 @@ import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import com.gentics.labs.sso.cas.client.CASIntegrationFilter;
+
 public class CASLoginPortlet extends GenericPortlet {
     
     final static Logger logger = Logger.getLogger(CASLoginPortlet.class.getName());
@@ -29,43 +34,66 @@ public class CASLoginPortlet extends GenericPortlet {
     @Override
     protected void doView(RenderRequest request, RenderResponse response)
             throws PortletException, IOException {
-        String serviceUrl = (String) request.getPortletSession().getAttribute("serviceUrl", PortletSession.APPLICATION_SCOPE);
-        
-        
         PortletPreferences prefs = request.getPreferences();
+
+        // first see if the serviceUrl is a request parameter (e.g. if the user has entered a wrong username/password)
+        String serviceUrl = request.getParameter("service");
+        if (serviceUrl == null) {
+            // next take the service url from the filter
+            serviceUrl = CASIntegrationFilter.getCurrentServiceUrl();
+        }
+        
+        if (serviceUrl == null) {
+            // if service url could not be determiend automatically, fall back to configuration.
+            serviceUrl = prefs.getValue("service", null);
+        }
         String serverUrlPrefix = prefs.getValue("casServerUrlPrefix", null);
-        String service = prefs.getValue("service", null);
+        // backUrlPrefix is only used if URL cannot be generated host-absolute.
         String backUrlPrefix = prefs.getValue("backUrlPrefix", null);
         
         if (serverUrlPrefix == null) {
             logger.severe("Invalid configuration: serverUrlPrefix is null.");
             return;
         }
-        if (service == null) {
+        if (serviceUrl == null) {
             logger.severe("Invalid configuration: service is null.");
             return;
         }
+        
+        if (request.getUserPrincipal() != null) {
+            // we are already logged in. no need to display login form.
+            PortletRequestDispatcher dispatcher = getPortletContext().getRequestDispatcher("/views/loggedin.jsp");
+            
+            PortletURL logoutUrl = response.createActionURL();
+            logoutUrl.setParameter("proxyLogoutUrl", serverUrlPrefix + "/logout?url=" + URLEncoder.encode(serviceUrl, "UTF-8"));
+            request.setAttribute("logoutUrl", logoutUrl.toString());
+            dispatcher.include(request, response);
+            return;
+        }
+
         
         PortletURL errorurl = response.createRenderURL();
         // we require a full url including protocol://host (this is only possible vendor specific)
         errorurl.setProperty("com.gentics.portalnode.hostabsolute", "true");
         errorurl.setParameter("error", "true");
+        errorurl.setParameter("service", serviceUrl);
         String onError = errorurl.toString();
         if (!onError.contains("://")) {
             // url was not generated absolute.
             onError = backUrlPrefix + onError;
         }
         
-        String credentialValidate = serverUrlPrefix + "/credentialValidate";
+        String credentialValidate = serverUrlPrefix + "/credentialValidator";
         
         String lt = fetchLoginToken(credentialValidate);
         
         PortletRequestDispatcher dispatcher = getPortletContext().getRequestDispatcher("/views/loginform.jsp");
         
-        request.setAttribute("credentialValidateUrl", credentialValidate);
+        request.setAttribute("credentialValidateUrl", credentialValidate + "?service=" + URLEncoder.encode(response.encodeURL(serviceUrl),"UTF-8"));
         request.setAttribute("loginToken", lt);
         request.setAttribute("onErrorUrl", onError);
-        request.setAttribute("service", service);
+        request.setAttribute("error", request.getParameter("error"));
+        request.setAttribute("service", serviceUrl);
         
         try {
         dispatcher.include(request, response);
@@ -74,6 +102,18 @@ public class CASLoginPortlet extends GenericPortlet {
         }
     }
     
+    @Override
+    public void processAction(ActionRequest request, ActionResponse response)
+            throws PortletException, IOException {
+        String logoutUrl = request.getParameter("proxyLogoutUrl");
+        if (logoutUrl != null) {
+            PortletSession session = request.getPortletSession();
+            if (session != null) {
+                session.invalidate();
+            }
+            response.sendRedirect(logoutUrl);
+        }
+    }
     
     private String fetchLoginToken(String serviceValidate) {
         try {
