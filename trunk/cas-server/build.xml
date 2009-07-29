@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Jul 24, 2009 3:33:48 PM                                                        
+
+     CAS Server deployment    
+                   
+     herbert                                                                
+     ====================================================================== -->
+<project name="CAS Server deployment" default="buildall">
+	
+	<property name="cas.version" value="3.3.3" />
+	<property name="cas.release" value="original/cas-server-${cas.version}-release.zip" />
+
+
+	<property name="config.dir" value="config" />
+	
+	<property name="output.dir" value="output" />
+
+	<target name="build">
+		<mkdir dir="${output.dir}/${configname}" />
+		<mkdir dir="${output.dir}/work" />
+		<unzip src="${cas.release}" dest="${output.dir}/work">
+			<patternset includes="**/cas-server-webapp-${cas.version}.war" />
+			<mapper type="flatten" />
+		</unzip>
+		<unzip src="${output.dir}/work/cas-server-webapp-${cas.version}.war" dest="${output.dir}/work/webapp" />
+		
+		<!-- compile java files .. -->
+		<javac target="1.5" srcdir="src" debug="true" destdir="${output.dir}/work/webapp/WEB-INF/classes">
+			<classpath>
+				<fileset dir="build_deps" includes="*.jar" />
+				<fileset dir="${output.dir}/work/webapp/WEB-INF/lib" includes="*.jar" />
+			</classpath>
+		</javac>
+		<!-- copying resources .. -->
+		<copy todir="${output.dir}/work/webapp/WEB-INF/classes">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
+		
+		<war destfile="${output.dir}/${configname}/cas-server.war" duplicate="preserve">
+			<fileset dir="${config.dir}/${configname}" />
+			<fileset dir="WebContent" includes="**/*" />
+			<fileset dir="${output.dir}/work/webapp" />
+			
+		</war>
+	</target>
+
+	<target name="buildall" depends="init" description="--> description">
+		<antcall target="build" inheritall="true">
+			<param name="configname" value="ldaptest" />
+		</antcall>
+		<antcall target="build" inheritall="true">
+			<param name="configname" value="ers" />
+		</antcall>
+	</target>
+
+	<target name="init">
+		<mkdir dir="${output.dir}" />
+	</target>
+	
+	
+	<patternset id="cas_unmodified">
+		<exclude name="src/com/**" />
+		<exclude name="src/credentialvalidator_views*" />
+		<exclude name="WebContent/META-INF/context.xml" />
+		<exclude name="WebContent/WEB-INF/web.xml" />
+		<exclude name="WebContent/WEB-INF/credentialValidator.xml" />
+		<exclude name="WebContent/WEB-INF/view/jsp/protocol/2.0/casServiceValidationSuccess.jsp" />
+		<exclude name="WebContent/WEB-INF/view/jsp/default/ui/casLogoutView.jsp" />
+		<exclude name="WebContent/WEB-INF/view/jsp/default/ui/casLoginView.jsp" />
+		<exclude name="WebContent/WEB-INF/view/jsp/default/ui/casGenericSuccess.jsp" />
+		<exclude name="WebContent/WEB-INF/view/jsp/credentialValidator/**" />
+		
+		<include name="src/**" />
+		<include name="WebContent/**" />
+	</patternset>
+	
+	
+	<!--
+	cleanworkspace and extractcas are meant for development:
+	during development, 'extractcas' will give you a runable eclipse web module project. after that
+	run 'cleanworkspace' to remove all unmodified files (check the fileset 'cas_unmodified' if you
+	modified any files !!!)
+	-->
+	
+	<target name="cleanworkspace">
+		<delete includeemptydirs="true">
+			<fileset dir=".">
+				<patternset refid="cas_unmodified" />
+			</fileset>
+		</delete>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${output.dir}" />
+	</target>
+	
+	<target name="extractcas">
+		<mkdir dir="work" />
+		<unzip src="${cas.release}" dest="work">
+			<patternset includes="**/cas-server-webapp-${cas.version}.war" />
+			<mapper type="flatten" />
+		</unzip>
+		<unzip src="work/cas-server-webapp-${cas.version}.war" dest="work/webapp/WebContent" />
+		
+		<!-- we need to move property files to src directory .. -->
+		<mkdir dir="work/webapp/src" />
+		<move todir="work/webapp/src">
+			<fileset dir="work/webapp/WebContent/WEB-INF/classes" />
+		</move>
+		
+		<copy todir=".">
+			<fileset dir="work/webapp">
+				<patternset refid="cas_unmodified" />
+			</fileset>
+		</copy>
+		
+		<delete dir="work" />
+	</target>
+
+</project>
