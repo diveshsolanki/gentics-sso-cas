@@ -6,7 +6,7 @@ gentics-sso-cas contains CAS server and client extensions and customizations to 
 
 == Server==
 
-  * Possibility to use a login form integrated into each service - instead of linking the user to a CAS login form with a backurl (as well as providing an on_error URL if login fails.)
+  * Possibility to use a login form integrated into each service - instead of linking the user to a CAS login form with a backurl (as well as providing an on_error URL if login fails.) - Similar to http://www.ja-sig.org/wiki/display/CAS/Using+CAS+without+the+CAS+login+screen but without the hacks.
   * Build script to generated customized cas-server.war which can be immediately deployed.
 
 == Client ==
