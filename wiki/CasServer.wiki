@@ -1,0 +1,59 @@
+#summary Documentation on how to use the build script to create a customized cas-server web application and how the CredentialValidator extends on the CAS protocol.
+
+= Introduction =
+
+The original cas-server relies on forcing every service provider (application) to redirect it's login to the cas-server login form. But in certain usecases it is required to display a login form directly in the application (e.g. for a portal with an anonymous section where only parts of the website need security).
+
+= Download =
+
+Currently cas-server extensions are [http://code.google.com/p/gentics-sso-cas/source/checkout only available through subversion].
+
+= Build Script =
+
+The build script is a very simple ant script which servers four main purposes:
+
+  * Extract the original cas-server web application from the official CAS Server release (located in original/)
+  * Overwrite the original files with the modified files from our cas-server project.
+  * Add your configuration to the new web application
+  * Finally package the resulting web application as cas-server.war
+
+= Usage =
+
+Here is a simple use case for creating a cas-server which authenticates against an LDAP server:
+
+{{{
+herbert@herbert:/tmp$ svn checkout http://gentics-sso-cas.googlecode.com/svn/trunk/ gentics-sso-cas-read-only  
+A    gentics-sso-cas-read-only/cas-client
+A    gentics-sso-cas-read-only/cas-client/.classpath
+[...]
+
+herbert@herbert:/tmp$ cd gentics-sso-cas-read-only/cas-server
+herbert@herbert:/tmp/gentics-sso-cas-read-only/cas-server$ cp -r config/ldaptest /tmp/sampleconfig
+herbert@herbert:/tmp/gentics-sso-cas-read-only/cas-server$ vi config/sampleconfig/WEB-INF/deployerConfigContext.xml 
+
+# Customize LDAP configuration
+# e.g. search for 'mail.gentics.com' and replace it with your own configuration.
+herbert@herbert:/tmp/gentics-sso-cas-read-only/cas-server$ ant -Dconfig.dir=/tmp -Dconfigname=sampleconfig build
+Buildfile: build.xml
+
+build:
+    [unzip] Expanding: /tmp/gentics-sso-cas-read-only/cas-server/original/cas-server-3.3.3-release.zip into /tmp/gentics-sso-cas-read-only/cas-server/output/work
+    [unzip] Expanding: /tmp/gentics-sso-cas-read-only/cas-server/output/work/cas-server-webapp-3.3.3.war into /tmp/gentics-sso-cas-read-only/cas-server/output/work/webapp
+    [javac] Compiling 3 source files to /tmp/gentics-sso-cas-read-only/cas-server/output/work/webapp/WEB-INF/classes
+     [copy] Copying 1 file to /tmp/gentics-sso-cas-read-only/cas-server/output/work/webapp/WEB-INF/classes
+      [war] Building war: /tmp/gentics-sso-cas-read-only/cas-server/output/sampleconfig/cas-server.war
+      [war] WEB-INF/deployerConfigContext.xml already added, skipping
+      [war] WEB-INF/view/jsp/default/ui/casGenericSuccess.jsp already added, skipping
+      [war] WEB-INF/view/jsp/default/ui/casLoginView.jsp already added, skipping
+      [war] WEB-INF/view/jsp/default/ui/casLogoutView.jsp already added, skipping
+      [war] WEB-INF/view/jsp/protocol/2.0/casServiceValidationSuccess.jsp already added, skipping
+      [war] Warning: selected war files include a second WEB-INF/web.xml which will be ignored.
+      [war] The duplicate entry is at /tmp/gentics-sso-cas-read-only/cas-server/output/work/webapp/WEB-INF/web.xml
+      [war] The file that will be used is /tmp/gentics-sso-cas-read-only/cas-server/WebContent/WEB-INF/web.xml
+
+BUILD SUCCESSFUL
+Total time: 14 seconds
+herbert@herbert:/tmp/gentics-sso-cas-read-only/cas-server$ 
+
+# Now grab your output/sampleconfig/cas-server.war - deploy it into an apache tomcat and have fun with your customized cas-server !
+}}}
