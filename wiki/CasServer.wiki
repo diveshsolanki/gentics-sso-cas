@@ -1,5 +1,8 @@
 #summary Documentation on how to use the build script to create a customized cas-server web application and how the CredentialValidator extends on the CAS protocol.
 
+
+<wiki:toc max_depth="1" />
+
 = Introduction =
 
 The original cas-server relies on forcing every service provider (application) to redirect it's login to the cas-server login form. But in certain usecases it is required to display a login form directly in the application (e.g. for a portal with an anonymous section where only parts of the website need security).
