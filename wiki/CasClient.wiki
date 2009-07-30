@@ -1,0 +1,33 @@
+#summary Description on how to use the cas-client to CASsify your Portal.
+
+<wiki:toc />
+
+= Introduction =
+
+CasClient consists of a sample portlet which displays a login form and a filter which will extract attributes from a CAS Principial into a session attribut as a generic Map.
+
+
+= Usage =
+
+== Portlet ==
+
+Checkout cas-client from subversion into your Eclipse workspace. Right click on the project and export it as war file with the name cas-client.war
+
+Afterwards you can customize the portlet.xml (adapt casServerUrlPrefix to point to your server.)
+
+== Filter ==
+
+Right-click on the CASIntegrationFilter -> export as -> jar file. The resulting .jar file has to be placed into the shared/lib folder or the WEB-INF/lib folder of your Portal server.
+
+Add the following filter configuration to your portal server after [http://www.ja-sig.org/wiki/display/CASC/Configuring+the+JA-SIG+CAS+Client+for+Java+in+the+web.xml all other CAS filters]:
+
+{{{
+	<filter>
+		<filter-name>PN CAS Integration Filter</filter-name>
+		<filter-class>
+			com.gentics.labs.sso.cas.client.CASIntegrationFilter
+		</filter-class>
+	</filter>
+}}}
+
+If you are not using [http://www.gentics.com Gentics Portal.Node] you probably need to modify the init parameter sessionAttributeName which defaults to com.gentics.portalnode.remoteuserdata
