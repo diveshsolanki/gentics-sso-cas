@@ -1,4 +1,5 @@
 #summary Documentation for the gentics-sso-cas project
+#labels Featured
 
 = Introduction =
 
