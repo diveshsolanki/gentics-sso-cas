@@ -11,7 +11,7 @@ The original cas-server relies on forcing every service provider (application) t
 
 Currently cas-server extensions are [http://code.google.com/p/gentics-sso-cas/source/checkout only available through subversion].
 
-= Build Script =
+== Build Script ==
 
 The build script is a very simple ant script which servers four main purposes:
 
