@@ -57,3 +57,38 @@ herbert@herbert:/tmp/gentics-sso-cas-read-only/cas-server$
 
 # Now grab your output/sampleconfig/cas-server.war - deploy it into an apache tomcat and have fun with your customized cas-server !
 }}}
+
+= Credential Validator =
+
+The CredentialVerifier is a simple restless URL which:
+
+  * provides login tickets
+  * validates credentials and redirects to either the service or a given on_error url.
+
+== API ==
+
+The CredentialVerifier is bound to /cas-server/credentialValidator
+
+=== Fetching Login Tickets ===
+
+Simple URL which returns nothing else than a newly created login ticket. This is intended to be called by a service provider to display a login form to the user. This login form should then add the login ticket to the POST as 'lt' parameter (See below 'Validating Credentials'
+
+  * cmd=fetchlt
+
+{{{
+herbert@herbert:~$ curl -k https://localhost:8443/cas-server/credentialValidator?cmd=fetchlt
+LT-19-CkndyZfBBvm0gsWWbIi35NrHyJaV6R0uci7LVSxHLRgYT3AdBi-cas
+herbert@herbert:~$
+}}}
+
+=== Validating Credentials ===
+
+To validate credentials you should create a login form which creates a POST request by the user client to /cas-server/credentialValidator with the following parameters (HTML input fields in an HTML form):
+
+  * lt=.. the login ticket previously fetched in the backend using ?cmd=fetchlt
+  * service=http://.. the service URL to which the user should be redirected upon successful login.
+  * on_error=http://.. an absolute URL to which the user is redirected if the credentials could not be verified (ie. invalid username or password)
+  * username=.. the username which the user has entered
+  * password=.. the password entered by the user.
+
+See http://code.google.com/p/gentics-sso-cas/source/browse/trunk/cas-client/WebContent/views/loginform.jsp for an example login form as provided by the CASLoginPortlet.
