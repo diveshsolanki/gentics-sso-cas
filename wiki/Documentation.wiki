@@ -1,0 +1,15 @@
+#summary Documentation for the gentics-sso-cas project
+
+= Introduction =
+
+gentics-sso-cas contains CAS server and client extensions and customizations to work in a portlet environment. It contains simple feature additions based on the CAS server and client.
+
+== Server==
+
+  * Possibility to use a login form integrated into each service - instead of linking the user to a CAS login form with a backurl (as well as providing an on_error URL if login fails.)
+  * Build script to generated customized cas-server.war which can be immediately deployed.
+
+== Client ==
+
+  * Sample login portlet which uses the newly introduced API from the server
+  * Servlet filter to put the parameters of an authenticated Credential as a map into the servlet session.
