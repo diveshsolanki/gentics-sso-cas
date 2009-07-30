@@ -11,7 +11,7 @@ The original cas-server relies on forcing every service provider (application) t
 
 Currently cas-server extensions are [http://code.google.com/p/gentics-sso-cas/source/checkout only available through subversion].
 
-== Build Script ==
+= Build Script =
 
 The build script is a very simple ant script which servers four main purposes:
 
@@ -20,7 +20,7 @@ The build script is a very simple ant script which servers four main purposes:
   * Add your configuration to the new web application
   * Finally package the resulting web application as cas-server.war
 
-= Usage =
+== Usage ==
 
 Here is a simple use case for creating a cas-server which authenticates against an LDAP server:
 
