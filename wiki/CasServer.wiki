@@ -29,7 +29,7 @@ A    gentics-sso-cas-read-only/cas-client/.classpath
 
 herbert@herbert:/tmp$ cd gentics-sso-cas-read-only/cas-server
 herbert@herbert:/tmp/gentics-sso-cas-read-only/cas-server$ cp -r config/ldaptest /tmp/sampleconfig
-herbert@herbert:/tmp/gentics-sso-cas-read-only/cas-server$ vi config/sampleconfig/WEB-INF/deployerConfigContext.xml 
+herbert@herbert:/tmp/gentics-sso-cas-read-only/cas-server$ vi /tmp/sampleconfig/WEB-INF/deployerConfigContext.xml 
 
 # Customize LDAP configuration
 # e.g. search for 'mail.gentics.com' and replace it with your own configuration.
