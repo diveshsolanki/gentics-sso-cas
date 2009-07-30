@@ -1,7 +1,7 @@
 #summary Documentation on how to use the build script to create a customized cas-server web application and how the CredentialValidator extends on the CAS protocol.
 
 
-<wiki:toc max_depth="1" />
+<wiki:toc max_depth="3" />
 
 = Introduction =
 
