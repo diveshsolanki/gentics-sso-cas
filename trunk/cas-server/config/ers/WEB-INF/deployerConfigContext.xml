@@ -113,8 +113,14 @@
 						value="select ca2.value_text from contentattribute ca1 inner join contentattribute ca2 on ca2.contentid = ca1.contentid and ca2.name = 'pwd' where ca1.contentid like '50000.%' and ca1.name = 'login' and ca1.value_text = ?;" />
 					<property name="passwordEncoder"
 						ref="passwordEncoder" />
-					<property name="dataSource" ref="dataSource" />
+					<property name="dataSource" ref="dataSourceJndi" />
 				</bean>
+			</list>
+		</property>
+		<property name="authenticationMetaDataPopulators">
+			<list>
+				<bean
+					class="org.jasig.cas.authentication.principal.RememberMeAuthenticationMetaDataPopulator" />
 			</list>
 		</property>
 	</bean>
@@ -205,7 +211,7 @@
 			</map>
 		</property>
 		-->
-		<constructor-arg index="0" ref="dataSource" />
+		<constructor-arg index="0" ref="dataSourceJndi" />
 		<constructor-arg index="1"><list><value>login</value></list></constructor-arg>
 		<constructor-arg index="2" value="select ca1.value_text as login, ca2.name, ca2.value_text from contentattribute ca1 inner join contentattribute ca2 on ca1.contentid = ca2.contentid where ca1.name = 'login' and ca1.value_text = ?" />
 		<property name="defaultAttributeName" value="login" />
@@ -234,4 +240,10 @@
 			<value></value>
 		</property>
 	</bean>
+
+	<bean id="dataSourceJndi"
+		class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jdbc/UserDatabase" />
+	</bean>
+
 </beans>

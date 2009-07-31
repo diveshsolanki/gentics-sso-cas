@@ -15,7 +15,8 @@ import org.apache.commons.logging.LogFactory;
 import org.inspektr.common.ioc.annotation.NotEmpty;
 import org.inspektr.common.ioc.annotation.NotNull;
 import org.jasig.cas.CentralAuthenticationService;
-import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.jasig.cas.authentication.principal.RememberMeCredentials;
+import org.jasig.cas.authentication.principal.RememberMeUsernamePasswordCredentials;
 import org.jasig.cas.authentication.principal.WebApplicationService;
 import org.jasig.cas.ticket.ExpirationPolicy;
 import org.jasig.cas.ticket.Ticket;
@@ -25,6 +26,7 @@ import org.jasig.cas.ticket.support.TimeoutExpirationPolicy;
 import org.jasig.cas.util.UniqueTicketIdGenerator;
 import org.jasig.cas.web.support.ArgumentExtractor;
 import org.jasig.cas.web.support.CookieRetrievingCookieGenerator;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -91,9 +93,10 @@ public class CredentialValidator extends AbstractController {
                     return null;
                 }
                 // ticket was validated. now validate username/password ...
-                final UsernamePasswordCredentials c = new UsernamePasswordCredentials();
+                final RememberMeUsernamePasswordCredentials c = new RememberMeUsernamePasswordCredentials();
                 c.setUsername(req.getParameter("username"));
                 c.setPassword(req.getParameter("password"));
+                c.setRememberMe(StringUtils.hasText(req.getParameter(RememberMeCredentials.REQUEST_PARAMETER_REMEMBER_ME)));
                 String tgt;
                 try {
                     tgt = centralAuthenticationService.createTicketGrantingTicket(c);
@@ -103,7 +106,7 @@ public class CredentialValidator extends AbstractController {
                     res.sendRedirect(onError);
                     return null;
                 }
-                ticketGrantingTicketCookieGenerator.addCookie(res, tgt);
+                ticketGrantingTicketCookieGenerator.addCookie(req, res, tgt);
                 
                 // Ticket Granting Ticket was added. Now we need to create a service ticket.
                 WebApplicationService service = null;
