@@ -13,12 +13,12 @@ Currently cas-server extensions are [http://code.google.com/p/gentics-sso-cas/so
 
 = Build Script =
 
-The build script is a very simple ant script which servers four main purposes:
+The build script is a very simple ant script which serves four main purposes:
 
-  * Extract the original cas-server web application from the official CAS Server release (located in original/)
-  * Overwrite the original files with the modified files from our cas-server project.
-  * Add your configuration to the new web application
-  * Finally package the resulting web application as cas-server.war
+  * It extracts the original cas-server web application from the official CAS Server release (located in original/)
+  * It overwrites the original cas server files (provided within checkout) with the modified files from our cas-server project.
+  * It adds your configuration to the new web application
+  * It finally packages the resulting web application as cas-server.war
 
 == Usage ==
 
