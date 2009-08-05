@@ -15,6 +15,19 @@ Checkout cas-client from subversion into your Eclipse workspace. Right click on 
 
 Afterwards you can customize the portlet.xml (adapt casServerUrlPrefix to point to your server.)
 
+== Libraries == 
+
+Download the jasig cas client:
+[http://www.jasig.org/jasig-cas-client-java-316-release]
+
+Extract the archive cas-client-3.1.6-release.tar.gz and move the following jars to your shared library folder.
+
+./modules/cas-client-integration-atlassian-3.1.6.jar
+./modules/cas-client-core-3.1.6.jar
+./modules/xmlsec-1.3.0.jar
+./modules/commons-logging-1.1.jar
+./modules/servlet-api-2.3.jar
+
 == Filter ==
 
 Right-click on the CASIntegrationFilter.java -> export as -> jar file. The resulting .jar file has to be placed into the shared/lib folder or the WEB-INF/lib folder of your Portal server.
