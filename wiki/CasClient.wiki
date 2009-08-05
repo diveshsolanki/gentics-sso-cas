@@ -17,7 +17,7 @@ Afterwards you can customize the portlet.xml (adapt casServerUrlPrefix to point 
 
 == Filter ==
 
-Right-click on the CASIntegrationFilter -> export as -> jar file. The resulting .jar file has to be placed into the shared/lib folder or the WEB-INF/lib folder of your Portal server.
+Right-click on the CASIntegrationFilter.java -> export as -> jar file. The resulting .jar file has to be placed into the shared/lib folder or the WEB-INF/lib folder of your Portal server.
 
 Add the following filter configuration to your portal server after [http://www.ja-sig.org/wiki/display/CASC/Configuring+the+JA-SIG+CAS+Client+for+Java+in+the+web.xml all other CAS filters]:
 
