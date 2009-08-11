@@ -6,7 +6,7 @@ To use the cas-client and cas-server webapps with an Oracle Weblogic Application
 
 == cas-server ==
 
-Add '''WebContent/WEB-INF/weblogic.xml'''
+Add *WebContent/WEB-INF/weblogic.xml*
 <code>
 <?xml version="1.0" encoding="UTF-8"?>
 <wls:weblogic-web-app xmlns:wls="http://www.bea.com/ns/weblogic/weblogic-web-app" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd http://www.bea.com/ns/weblogic/weblogic-web-app http://www.bea.com/ns/weblogic/weblogic-web-app/1.0/weblogic-web-app.xsd">
@@ -18,9 +18,11 @@ Add '''WebContent/WEB-INF/weblogic.xml'''
 </wls:weblogic-web-app>
 </code>
 
+Furthermore there are known problems relating the *quartz-1.5.2.jar* library. You should avoid adding other versions of this library to your classpath.
+
 == cas-client == 
 
-Add '''WebContent/WEB-INF/weblogic.xml'''
+Add *WebContent/WEB-INF/weblogic.xml*
 <code>
 <?xml version="1.0" encoding="UTF-8"?>
 <wls:weblogic-web-app xmlns:wls="http://www.bea.com/ns/weblogic/weblogic-web-app" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd http://www.bea.com/ns/weblogic/weblogic-web-app http://www.bea.com/ns/weblogic/weblogic-web-app/1.0/weblogic-web-app.xsd">
@@ -32,3 +34,4 @@ Add '''WebContent/WEB-INF/weblogic.xml'''
 	</wls:container-descriptor>
 </wls:weblogic-web-app>
 </code>
+
