@@ -11,6 +11,13 @@ The original cas-server relies on forcing every service provider (application) t
 
 Currently cas-server extensions are [http://code.google.com/p/gentics-sso-cas/source/checkout only available through subversion].
 
+= Requirements =
+
+- cas-server has been tested on Apache Tomcat 6.0 and Oracle WebLogic
+- The cas-server needs to be deployed under a application server which runs on HTTPS. This means that you have to create a valid SSL ceritificate. See http://www.jasig.org/cas/server-deployment/solving-ssl-issues for more details.
+- cas-server should be deployed on it's own instance of the application server. (Because of library incompatibilities you should not run Gentics Portal.Node and cas-server on the same application server instance.)
+
+
 = Build Script =
 
 The build script is a very simple ant script which serves four main purposes:
