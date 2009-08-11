@@ -63,14 +63,14 @@ herbert@herbert:/tmp/gentics-sso-cas-read-only/cas-server$
 
 = Credential Validator =
 
-The CredentialVerifier is a simple restless URL which:
+The CredentialValidator is a simple restless URL which:
 
   * provides login tickets
   * validates credentials and redirects to either the service or a given on_error url.
 
 == API ==
 
-The CredentialVerifier is bound to /cas-server/credentialValidator
+The CredentialValidator is bound to /cas-server/credentialValidator
 
 === Fetching Login Tickets ===
 
