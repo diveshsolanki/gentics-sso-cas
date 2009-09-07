@@ -81,5 +81,14 @@ ${flowExecutionKey}<%
 	                </div>
 	            </div>
         	</form:form>
+        	<script language="JavaScript" type="text/javascript">
+        	<!--
+        		window.onload = function() {
+        			if (document.getElementById("username")) {
+        				document.getElementById("username").focus();
+        			}
+        		};
+        	//-->
+        	</script>
 <jsp:directive.include file="includes/bottom.jsp" />
 <% } %>
