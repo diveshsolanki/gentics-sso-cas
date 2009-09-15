@@ -100,5 +100,6 @@ To validate credentials you should create a login form which creates a POST requ
   * on_error=http://.. an absolute URL to which the user is redirected if the credentials could not be verified (ie. invalid username or password)
   * username=.. the username which the user has entered
   * password=.. the password entered by the user.
+  * rememberMe=.. when 1 this will activate "remember me" functionality (ie. cookie will not invalidate with the session)
 
 See http://code.google.com/p/gentics-sso-cas/source/browse/trunk/cas-client/WebContent/views/loginform.jsp for an example login form as provided by the CASLoginPortlet.
