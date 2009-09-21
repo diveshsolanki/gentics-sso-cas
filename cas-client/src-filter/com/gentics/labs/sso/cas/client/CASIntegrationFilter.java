@@ -6,14 +6,20 @@
 package com.gentics.labs.sso.cas.client;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletRequestWrapper;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -75,12 +81,68 @@ public class CASIntegrationFilter implements Filter {
                             assertion.getPrincipal().getAttributes());
                 }
             }
+            
+            Object assertObj = request.getAttribute("_const_cas_assertion_");
+            if (assertObj != null) {
+            	final Map parameterMap = request.getParameterMap();
+            	final Map newParameterMap = new HashMap(parameterMap);
+            	newParameterMap.put("p._cas_assertion_", assertObj);
+            	request = new HttpServletRequestWrapper(servletRequest) {
+            		@Override
+            		public Enumeration getParameterNames() {
+            			return new IteratorEnumeration(getParameterMap().keySet().iterator());
+            		}
+            		
+            		@Override
+            		public String getParameter(String name) {
+            			String[] val = getParameterValues(name);
+            			if (val == null || val.length < 1) {
+            				return null;
+            			}
+            			return val[0];
+            		}
+            		
+            		@Override
+            		public String[] getParameterValues(String name) {
+            			Object obj = getParameterMap().get(name);
+            			if (obj instanceof String[]) {
+            				return (String[]) obj;
+            			} else if (obj == null) {
+            				return null;
+            			}
+            			return new String[] { obj.toString() };
+            		}
+            		
+            		@Override
+            		public Map getParameterMap() {
+            			return newParameterMap;
+            		}
+            	};
+            }
         }
         try {
             chain.doFilter(request, response);
         } finally {
             serviceUrlStorage.remove();
         }
+    }
+    
+    private static class IteratorEnumeration implements Enumeration {
+    	
+    	private Iterator i;
+
+		public IteratorEnumeration(Iterator i) {
+    		this.i = i;
+    	}
+
+		public boolean hasMoreElements() {
+			return i.hasNext();
+		}
+
+		public Object nextElement() {
+			return i.next();
+		}
+    	
     }
 
     /*

@@ -1,0 +1,49 @@
+<project name="cas-client builder">
+	
+	<property name="build.dir" value="antbuild" />
+	<property name="output.dir" value="output" />
+
+	<property name="filter.src" value="src-filter" />
+	<property name="filter.jar" value="casintegrationfilter.jar" />
+	<property name="webapp.src" value="src" />
+	
+	<target name="init">
+	</target>
+	
+	<path id="clientclasspath">
+		<fileset dir="build_deps" includes="**/*.jar" />
+	</path>
+		
+		
+	<target name="build-filter" depends="init">
+		<delete dir="${build.dir}" />
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${output.dir}" />
+		
+		<javac srcdir="${filter.src}" destdir="${build.dir}" debug="on" debuglevel="lines,vars,source" classpathref="clientclasspath">
+		</javac>
+		
+		<jar basedir="${build.dir}" destfile="${output.dir}/${filter.jar}" />
+	</target>
+	
+	<target name="build-webapp" depends="init,build-filter">
+		<delete dir="${build.dir}" />
+		<mkdir dir="${build.dir}/webapp/WEB-INF/classes" />
+		<mkdir dir="${build.dir}/bin" />
+		
+		<javac srcdir="${webapp.src}" destdir="${build.dir}/webapp/WEB-INF/classes" debug="on" debuglevel="lines,vars,source">
+			<classpath>
+				<path refid="clientclasspath" />
+				<pathelement path="${output.dir}/${filter.jar}" />
+			</classpath>
+		</javac>
+		<copy todir="${build.dir}/webapp">
+			<fileset dir="WebContent" includes="**/*" />
+		</copy>
+		
+		<war destfile="${output.dir}/cas-client.war">
+			<fileset dir="${build.dir}/webapp" includes="**/*" />
+		</war>
+	</target>
+	
+</project>
