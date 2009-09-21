@@ -8,8 +8,8 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 			/WEB-INF/spring-configuration/*.xml
-			/WEB-INF/deployerConfigContext.xml
 			/WEB-INF/credentialValidator.xml
+			/WEB-INF/deployerConfigContext.xml
 		</param-value>
 	</context-param>
 
