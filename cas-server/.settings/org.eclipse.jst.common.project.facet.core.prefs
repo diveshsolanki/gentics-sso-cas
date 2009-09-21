@@ -1,4 +1,4 @@
-#Fri Jul 10 09:35:06 GMT 2009
+#Mon Aug 31 15:43:38 GMT 2009
 classpath.helper/org.eclipse.jdt.launching.JRE_CONTAINER/owners=jst.java\:6.0
-classpath.helper/org.eclipse.jst.server.core.container\:\:org.eclipse.jst.server.tomcat.runtimeTarget\:\:tomcat55runtime/owners=jst.web\:2.4
+classpath.helper/org.eclipse.jst.server.core.container\:\:org.eclipse.jst.server.tomcat.runtimeTarget\:\:Gentics\ Portal.Node\ Runtime/owners=jst.web\:2.4
 eclipse.preferences.version=1
