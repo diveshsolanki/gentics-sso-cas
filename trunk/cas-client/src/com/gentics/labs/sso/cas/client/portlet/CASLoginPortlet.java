@@ -96,9 +96,9 @@ public class CASLoginPortlet extends GenericPortlet {
         request.setAttribute("service", serviceUrl);
         
         try {
-        dispatcher.include(request, response);
+        	dispatcher.include(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new PortletException("Error while dispatching to jsp.", e);
         }
     }
     

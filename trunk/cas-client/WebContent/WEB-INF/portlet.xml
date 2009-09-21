@@ -16,7 +16,7 @@
 			<preference>
 				<!-- The full URL to the CAS Server web application. -->
 				<name>casServerUrlPrefix</name>
-				<value>https://herbert.office:8443/cas-server</value>
+				<value>http://localhost:42880/cas-server</value>
 			</preference>
 		</portlet-preferences>
 	</portlet>
