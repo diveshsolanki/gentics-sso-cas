@@ -1,4 +1,4 @@
-<project name="cas-client-gpn builder">
+<project name="cas-client-gpn builder" default="build-filter">
 	
 	<property name="build.dir" value="antbuild" />
 	<property name="output.dir" value="output" />
