@@ -12,8 +12,11 @@ import java.util.logging.Logger;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 
 import com.gentics.api.lib.etc.ObjectTransformer;
+import com.gentics.api.lib.i18n.I18nString;
 import com.gentics.portalnode.formatter.GenticsStringFormatter;
 import com.gentics.portalnode.portal.GenticsPortletRequest;
 import com.gentics.portalnode.portal.Portal;
@@ -85,20 +88,39 @@ public class ReauthenticationHelper {
 					"ReauthenticationHelper was not initialized - have you correctly configured the ReauthenticationHelperFilter?");
 		}
 	}
-	
+
+	/**
+	 * Redirects the request to the given redirectURL - or returns 'true' if the user just passed authentication.
+	 * @param request resource request
+	 * @param response resource response
+	 * @param id authentication id
+	 * @param redirectURL URL to redirect if the user did not pass authentication
+	 * @return true when the user passed the authentication or false if not
+	 */
+	public boolean reauthenticateOrRedirect(ResourceRequest request,
+			ResourceResponse response, String id, String redirectURL) {
+		assertInitialized();
+		if (checkToken(id)) {
+			return true;
+		}
+
+		response.setProperty(ResourceResponse.HTTP_STATUS_CODE, "307");
+		response.setProperty("Location", redirectURL);
+		return false;
+	}
 	
 	/**
 	 * renders the password input form into the response - or returns 'true' if the user just passed authentication.
 	 * @param id the "instance id" which identifies the password reauthentication (usually the portlet entity name or portlet name.)
 	 */
-	public boolean reauthenticateOrShowPasswordField(PortletRequest request, RenderResponse response, String id) {
+	public boolean reauthenticateOrShowPasswordField(PortletRequest request, RenderResponse response, String id, String name) {
 		assertInitialized();
 		if (checkToken(id)) {
 			return true;
 		}
 		
 		boolean showError = ObjectTransformer.getBoolean(request.getParameter("autherror"), false);
-		
+
         PortletURL errorurl = response.createRenderURL();
         // we require a full url including protocol://host (this is only possible vendor specific)
         errorurl.setProperty("com.gentics.portalnode.hostabsolute", "true");
@@ -110,14 +132,14 @@ public class ReauthenticationHelper {
         successurl.setParameter("success", "1");
         
 		try {
-			showPasswordField(response.getWriter(), showError, successurl.toString() + "&" + REAUTH_ID_PARAMETER + "=" + URLEncoder.encode(id, "UTF-8"), errorurl.toString());
+			showPasswordField(response.getWriter(), showError, successurl.toString() + "&" + REAUTH_ID_PARAMETER + "=" + URLEncoder.encode(id, "UTF-8"), errorurl.toString(), name);
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Error while retrieving writer from response.", e);
 		}
 		return false;
 	}
 
-	private void showPasswordField(PrintWriter writer, boolean showError, String serviceUrl, String errorUrl) {
+	private void showPasswordField(PrintWriter writer, boolean showError, String serviceUrl, String errorUrl, String name) {
 		// we do it inline, because it wouldn't make much sense to use templates or whatever.. just keep HTML simple so it can be easily customized
 		// using CSS
 		Portal portal = Portal.getCurrentPortal();
@@ -141,7 +163,9 @@ public class ReauthenticationHelper {
 			writer.print("</span>");
 		}
 		writer.print("<label for=\"gtx_cas_reauthpassword\">");
-		writer.print(portal.i18n("Enter Password"));
+		I18nString enterPassword = portal.i18n("Enter Password for $name");
+		enterPassword.setParameter("name", name);
+		writer.print(enterPassword);
 		writer.print("</label><input type=\"password\" name=\"password\" id=\"gtx_cas_reauthpassword\" /> <input type=\"submit\" value=\"");
 		writer.print(portal.i18n("Submit"));
 		writer.print("\" /></form></div>");
