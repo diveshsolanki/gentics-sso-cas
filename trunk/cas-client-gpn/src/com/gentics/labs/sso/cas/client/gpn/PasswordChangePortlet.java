@@ -31,6 +31,24 @@ import com.gentics.lib.etc.StringUtils;
 /**
  * Example implementation for a portlet providing a "password change" dialog.
  * 
+ * Example Configuration:
+ * <pre><![CDATA[
+	<pnode type="cas-client-gpn/PasswordChangePortlet" id="PasswordChangePortlet">
+		<parameters>
+			<parameter name="datasource">ers</parameter>
+			<parameter name="secret">hehe</parameter>
+			<parameter name="token_obj_type">30000</parameter>
+			
+			<parameter name="user_obj_type">50000</parameter>
+			<parameter name="user_name_attribute">login</parameter>
+			<parameter name="user_password_attribute">pwd</parameter>
+			<parameter name="user_passwordchange_attribute">passwordChangeDate</parameter>
+			
+			<parameter name="post_password_changed_url">http://localhost:42880/cas-server/credentialValidator?cmd=passwordChanged</parameter>
+		</parameters>
+	</pnode>
+ ]]></pre>
+ * 
  * @author herbert
  */
 public class PasswordChangePortlet extends AbstractGenticsPortlet {
