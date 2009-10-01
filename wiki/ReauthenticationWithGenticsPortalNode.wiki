@@ -24,8 +24,10 @@
 <pnode type="cas-client-gpn/ContentModuleWithReauthentication" id="CMR">
   <parameters>
     <parameter name="casServerUrlPrefix">[url to your CAS server]</parameter>
+    <parameter name="reauthentication_attribute_name">requirereauthentication</parameter>
     ...
   </parameters>
   ...
 </pnode>
 }}}
+  # When the user accesses content that has the attribute configured by _reauthentication_attribute_name_ (defaults to *requirereauthentication*) set to true (or 1), he will be asked for the password before the content is rendered.
