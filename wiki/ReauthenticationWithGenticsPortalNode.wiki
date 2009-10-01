@@ -1,0 +1,31 @@
+#summary Reauthentication allows you to secure content so that the user has to enter his password every time, the content is accessed.
+
+= How to setup Reauthentication in Gentics Portal.Node SDK =
+
+  # Checkout cas-client-gpn into Gentics Portal.Node SDK
+  # Run the build.xml Script (default target)
+  # Refresh the project and locate the generated file _output/casintegrationfilter-gpn.jar_
+  # Copy _output/casintegrationfilter-gpn.jar_ into _shared/lib_ of your server configuration (Maybe you need to switch to the _Resource_ Perspective)
+  # Deploy the portletapp _cas-client-gpn_ to the server instance
+  # Add the filter into the customized _web.xml_ of your server instance:
+{{{
+<filter>
+  <filter-name>Reauthentication Helper</filter-name>
+  <filter-class>com.gentics.labs.sso.cas.client.gpn.ReauthenticationHelperFilter</filter-class>
+</filter>
+
+<filter-mapping>
+  <filter-name>Reauthentication Helper</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping>
+}}}
+  # Use the specialized ContentModuleWithReauthentication instead of the default GenticsContentModule in your implementation:
+{{{
+<pnode type="cas-client-gpn/ContentModuleWithReauthentication" id="CMR">
+  <parameters>
+    <parameter name="casServerUrlPrefix">[url to your CAS server]</parameter>
+    ...
+  </parameters>
+  ...
+</pnode>
+}}}
