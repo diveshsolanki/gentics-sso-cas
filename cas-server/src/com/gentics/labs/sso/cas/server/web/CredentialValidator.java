@@ -128,9 +128,10 @@ public class CredentialValidator extends AbstractController {
         	// we only want re authentcation .. ie. a ticket granting ticket must already be available.
         	
         	// construct the credentials
-        	UsernamePasswordCredentials c = new UsernamePasswordCredentials();
+        	final RememberMeUsernamePasswordCredentials c = new RememberMeUsernamePasswordCredentials();
             c.setUsername(req.getParameter("username"));
             c.setPassword(req.getParameter("password"));
+            c.setRememberMe(StringUtils.hasText(req.getParameter(RememberMeCredentials.REQUEST_PARAMETER_REMEMBER_ME)));
             
             // retrieve the TGT from the request
             String tgt = ticketGrantingTicketCookieGenerator.retrieveCookieValue(req);
