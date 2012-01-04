@@ -1,1 +1,0 @@
-See: https://github.com/gentics/Gentics-SSO-CAS/wiki/Reauthentication-with-Gentics-Portal.Node
