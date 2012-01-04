@@ -1,23 +1,2 @@
-#summary Documentation for the gentics-sso-cas project
 #labels Featured
-
-= Introduction =
-
-gentics-sso-cas contains CAS server and client extensions and customizations to work in a portlet environment. It contains simple feature additions based on the CAS server and client.
-
-== Server==
-
-See CasServer for details.
-
-  * Possibility to use a login form integrated into each service - instead of linking the user to a CAS login form with a backurl (as well as providing an on_error URL if login fails.) - Similar to http://www.ja-sig.org/wiki/display/CAS/Using+CAS+without+the+CAS+login+screen but without the hacks.
-  * Build script to generated customized cas-server.war which can be immediately deployed.
-
-== Client ==
-
-See CasClient for details.
-
-  * Sample login portlet which uses the newly introduced API from the server
-  * Servlet filter to put the parameters of an authenticated Credential as a map into the servlet session.
-
-== Oracle Bea Weblogic Server ==
-See OracleWeblogicConfiguration for details.
+See https://github.com/gentics/Gentics-SSO-CAS/wiki/Documentation
