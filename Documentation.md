@@ -1,0 +1,1 @@
+See https://github.com/gentics/Gentics-SSO-CAS/wiki/Documentation
